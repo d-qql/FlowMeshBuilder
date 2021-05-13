@@ -3,14 +3,14 @@
 //
 
 #include <array>
-#include <complex>
+#include <cmath>
 #include "Interpolator.h"
 
 double GetDistanceSquared(const Node node1, const Node node2) {
-    return std::pow((node2.x - node1.x), 2) + std::pow((node2.y - node1.y), 2) + std::pow((node2.z - node1.z), 2);
+    return ((node2.x - node1.x) * (node2.x - node1.x)) + ((node2.y - node1.y) * (node2.y - node1.y)) + ((node2.z - node1.z) * (node2.z - node1.z));
 }
 
-std::array<double, 3> Interpolator(const Node node, idx_t cellIndex, const Mesh &mesh) {
+std::array<double, 3> Interpolator(const Node& node, idx_t cellIndex, const Mesh &mesh) {
     std::array<double, 3> InterpolatedField = {0., 0., 0.};
     std::vector<idx_t> Neighbours;
     Neighbours.push_back(cellIndex);

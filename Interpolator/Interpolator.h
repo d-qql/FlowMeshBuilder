@@ -11,6 +11,6 @@
 
 using idx_t = unsigned int;
 
-std::array<double, 3> Interpolator(const Node node, idx_t cellIndex, const Mesh& mesh);
+std::array<double, 3> Interpolator(const Node& node, idx_t cellIndex, const Mesh& mesh);
 
 #endif //FLOWMESHBUILDER_INTERPOLATOR_H
