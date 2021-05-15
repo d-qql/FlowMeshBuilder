@@ -1,7 +1,7 @@
 #include "Intersection_ckecker.h"
 
 // проверяет пересечение с треугольником. Возвращает расстояние t, если пересечение есть, -1 иначе
-double checkTriangle(const node &O, double vx, double vy, double vz, idx_t triangleIndex, const Mesh &mesh) {
+double checkTriangle(const Node &O, double vx, double vy, double vz, idx_t triangleIndex, const Mesh &mesh) {
     node A = mesh.Nodes[mesh.Triangles[triangleIndex].nodes[0]];
     node B = mesh.Nodes[mesh.Triangles[triangleIndex].nodes[1]];
     node C = mesh.Nodes[mesh.Triangles[triangleIndex].nodes[2]];
@@ -44,7 +44,7 @@ double checkTriangle(const node &O, double vx, double vy, double vz, idx_t trian
     return t;
 }
 
-idx_t findIntersection(const node& node1, const node& node2, idx_t cellIndex, const Mesh& mesh) {
+idx_t findIntersection(const Node& node1, const Node& node2, idx_t cellIndex, const Mesh& mesh) {
     vx = node2.x - node1.x;
     vy = node2.y - node1.y;
     vz = node2.z - node1.z;
