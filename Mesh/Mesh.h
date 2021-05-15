@@ -13,12 +13,9 @@ class Mesh {
     using idx_t = unsigned int;
 public:
 
-    std::unordered_map<idx_t, Node> Nodes;
-    std::unordered_map<idx_t, Triangle> Triangles;
-    std::unordered_map<idx_t, Cell> InternalCells;
-    std::unordered_map<idx_t, Cell> InternalBoundaryCells;
-    std::unordered_map<idx_t, Cell> ExternalBoundaryCells;
-
+    std::vector<Node> Nodes;
+    std::vector<Triangle> Triangles;
+    std::vector<Cell> Cells;
     explicit Mesh(std::ifstream& UNVmesh);
 };
 

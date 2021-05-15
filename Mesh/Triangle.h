@@ -15,6 +15,7 @@ public:
     std::array<double, 3> normal; //length = square of triangle
     std::array<idx_t , 3> nodes;
     Triangle(idx_t id, idx_t node1, idx_t node2, idx_t node3);
+    Triangle() = default;
 };
 std::ostream& operator<<(std::ostream& os, const Triangle& Tri);
 
