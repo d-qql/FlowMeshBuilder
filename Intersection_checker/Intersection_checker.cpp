@@ -1,12 +1,12 @@
-#include "Intersection_ckecker.h"
+#include "Intersection_checker.h"
 
 // проверяет пересечение с треугольником. Возвращает расстояние t, если пересечение есть, -1 иначе
 double checkTriangle(const Node &O, double vx, double vy, double vz, idx_t triangleIndex, const Mesh &mesh) {
-    node A = mesh.Nodes[mesh.Triangles[triangleIndex].nodes[0]];
-    node B = mesh.Nodes[mesh.Triangles[triangleIndex].nodes[1]];
-    node C = mesh.Nodes[mesh.Triangles[triangleIndex].nodes[2]];
+    Node A = mesh.Nodes[mesh.Triangles[triangleIndex].nodes[0]];
+    Node B = mesh.Nodes[mesh.Triangles[triangleIndex].nodes[1]];
+    Node C = mesh.Nodes[mesh.Triangles[triangleIndex].nodes[2]];
 
-    node T, E1, E2;
+    Node T, E1, E2;
     T.x = O.x - A.x;
     T.y = O.y - A.y;
     T.z = O.z - A.z;
@@ -45,12 +45,12 @@ double checkTriangle(const Node &O, double vx, double vy, double vz, idx_t trian
 }
 
 idx_t findIntersection(const Node& node1, const Node& node2, idx_t cellIndex, const Mesh& mesh) {
-    vx = node2.x - node1.x;
-    vy = node2.y - node1.y;
-    vz = node2.z - node1.z;
+    double vx = node2.x - node1.x;
+    double vy = node2.y - node1.y;
+    double vz = node2.z - node1.z;
 
     for (int i = 0; i < 4; ++i) {
-        t = checkTriangle(node1, vx, vy, vz, mesh.Cells[cellIndex].triangles[i], mesh);
+        double t = checkTriangle(node1, vx, vy, vz, mesh.Cells[cellIndex].triangles[i], mesh);
         if (t != -1) {
             if (t > 1)
                 return -1;
