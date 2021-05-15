@@ -50,12 +50,12 @@ idx_t findIntersection(const node& node1, const node& node2, idx_t cellIndex, co
     vz = node2.z - node1.z;
 
     for (int i = 0; i < 4; ++i) {
-        t = checkTriangle(node1, vx, vy, vz, Mesh.Cells[cellIndex].triangles[i], mesh);
+        t = checkTriangle(node1, vx, vy, vz, mesh.Cells[cellIndex].triangles[i], mesh);
         if (t != -1) {
             if (t > 1)
                 return -1;
             else
-                return i;
+                return mesh.Cells[cellIndex].triangles[i];
         }
     }
     return -1;
