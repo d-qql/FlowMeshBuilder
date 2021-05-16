@@ -7,6 +7,7 @@
 Mesh::Mesh(const std::string& MESH_PATH) {
     std::ifstream UNVmesh(MESH_PATH);
     std::unordered_multimap<idx_t, idx_t> Node2Tri;
+    std::unordered_multimap<idx_t, idx_t> Tri2Cells;
     typedef std::unordered_multimap<idx_t, idx_t>::iterator UMMAPIterator;
     if (UNVmesh.is_open())
     {
@@ -27,7 +28,7 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             UNVmesh >> temp;
             UNVmesh >> x >> y >> z;
             if (id > Nodes.size()) Nodes.resize(id);
-            Nodes[id - 1] = Node({static_cast<unsigned int>(id - 1), x, y, z});
+            Nodes[id - 1] = Node({x, y, z});
         }
 
         while (getline(UNVmesh, line)) // ищем начало элементов
@@ -36,7 +37,6 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             if(line == "  2412") break;
         }
         idx_t type, node1, node2, node3, node4;
-        idx_t tri1, tri2, tri3, tri4;
         std::array<idx_t, 3> triNodes;
         std::set<Triangle> triSet;
         while (true) {
@@ -96,6 +96,7 @@ Mesh::Mesh(const std::string& MESH_PATH) {
     }else{
         std::cout<<"Can't open file!"<<std::endl;
     }
+    double center_x, center_y, center_z;
     UNVmesh.open(MESH_PATH);
     if (UNVmesh.is_open()){
         std::string line;
@@ -172,12 +173,32 @@ Mesh::Mesh(const std::string& MESH_PATH) {
                 tri2 = v_intersection124[0];
                 tri3 = v_intersection134[0];
                 tri4 = v_intersection234[0];
-                std::cout << id << " " << tri1 << " " << tri2 << " " << tri3 << " "<< tri4 << std::endl;
-               //TODO Cells.push_back()
+                //std::cout << id << " " << tri1 << " " << tri2 << " " << tri3 << " "<< tri4 << std::endl;
+                Tri2Cells.insert({tri1, cellsId});
+                Tri2Cells.insert({tri2, cellsId});
+                Tri2Cells.insert({tri3, cellsId});
+                Tri2Cells.insert({tri4, cellsId});
+                center_x = (Nodes[node1].x + Nodes[node2].x + Nodes[node3].x + Nodes[node4].x) / 4;
+                center_y = (Nodes[node1].y + Nodes[node2].y + Nodes[node3].y + Nodes[node4].y) / 4;
+                center_z = (Nodes[node1].z + Nodes[node2].z + Nodes[node3].z + Nodes[node4].z) / 4;
+                Cells.emplace_back(cellsId, tri1, tri2, tri3, tri4, Node{center_x, center_y, center_z});
                 ++cellsId;
             }
         }
+        for( auto cell: Cells){
+            for(idx_t tri = 0; tri < 4; ++tri){
+                std::pair<UMMAPIterator, UMMAPIterator> tri2cellIT = Tri2Cells.equal_range(cell.triangles[tri]);
+                for(UMMAPIterator it = tri2cellIT.first; it != tri2cellIT.second; ++it){
+                    //std::cout<<it->second<<std::endl;
+                    if( it->second != cell.id ) cell.neighbours.push_back(it->second);
 
+                }
+                //std::cout<<std::endl;
+            }
+            std::cout<<cell.neighbours.size()<<std::endl;
+            assert(cell.neighbours.size() <= 4 && "TOO MUCH NEIGHBOURS! BADABUM! DIMA IS DIED");
+            assert(!cell.neighbours.empty() && "TOO LOW NEIGHBOURS! BADABUM! DIMA HAS DIED");
+        }
     }else{
         std::cout<<"Can't open file!"<<std::endl;
     }
