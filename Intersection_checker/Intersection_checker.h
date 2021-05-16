@@ -5,7 +5,7 @@
 
 using idx_t = unsigned int;
 
-idx_t findIntersection(const node& node1, const node& node2, idx_t cellIndex, const Mesh& mesh);
+idx_t findIntersection(const Node& node1, const Node& node2, idx_t cellIndex, const Mesh& mesh);
 
 
 #endif //FLOWMESHBUILDER_INTERSECTION_CKECKER_H
