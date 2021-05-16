@@ -2,6 +2,7 @@
 #define FLOWMESHBUILDER_INTERSECTION_CKECKER_H
 
 #include "../Mesh/Mesh.h"
+#include <algorithm>
 
 using idx_t = unsigned int;
 
