@@ -3,8 +3,9 @@
 //
 
 #include "Mesh.h"
-#include <cassert>
-Mesh::Mesh(std::ifstream& UNVmesh) {
+
+Mesh::Mesh(const std::string& MESH_PATH) {
+    std::ifstream UNVmesh(MESH_PATH);
     std::unordered_multimap<idx_t, idx_t> Node2Tri;
     typedef std::unordered_multimap<idx_t, idx_t>::iterator UMMAPIterator;
     if (UNVmesh.is_open())
@@ -26,7 +27,7 @@ Mesh::Mesh(std::ifstream& UNVmesh) {
             UNVmesh >> temp;
             UNVmesh >> x >> y >> z;
             if (id > Nodes.size()) Nodes.resize(id);
-            Nodes[id - 1] = Node({x, y, z});
+            Nodes[id - 1] = Node({static_cast<unsigned int>(id - 1), x, y, z});
         }
 
         while (getline(UNVmesh, line)) // ищем начало элементов
@@ -36,6 +37,8 @@ Mesh::Mesh(std::ifstream& UNVmesh) {
         }
         idx_t type, node1, node2, node3, node4;
         idx_t tri1, tri2, tri3, tri4;
+        std::array<idx_t, 3> triNodes;
+        std::set<Triangle> triSet;
         while (true) {
             UNVmesh >> id;
             if (id == -1) break;
@@ -45,19 +48,73 @@ Mesh::Mesh(std::ifstream& UNVmesh) {
                 getline(UNVmesh, line);
                 continue;
             }
-            if (type == 41) {
-                getline(UNVmesh, line);
-                UNVmesh >> node1 >> node2 >> node3;
-                if (id > Triangles.size()) Triangles.resize(id);
-                Triangles[id - 1] = Triangle(static_cast<unsigned int>(id - 1), node1, node2, node3);
-                Node2Tri.insert({node1, static_cast<unsigned int>(id)});
-                Node2Tri.insert({node2, static_cast<unsigned int>(id)});
-                Node2Tri.insert({node3, static_cast<unsigned int>(id)});
-            }
+//            if (type == 41) {
+//                getline(UNVmesh, line);
+//                UNVmesh >> node1 >> node2 >> node3;
+//                if (id > Triangles.size()) Triangles.resize(id);
+//                Triangles[id - 1] = Triangle(static_cast<unsigned int>(id - 1), node1, node2, node3);
+//                Node2Tri.insert({node1, static_cast<unsigned int>(id)});
+//                Node2Tri.insert({node2, static_cast<unsigned int>(id)});
+//                Node2Tri.insert({node3, static_cast<unsigned int>(id)});
+//            }
             if (type == 111) {
                 getline(UNVmesh, line);
                 UNVmesh >> node1 >> node2 >> node3 >> node4;
-                if (id > Cells.size()) Cells.resize(id);
+                triNodes[0] = node1;
+                triNodes[1] = node2;
+                triNodes[2] = node3;
+                std::sort(triNodes.begin(), triNodes.end());
+                triSet.insert(Triangle(0, triNodes[0], triNodes[1], triNodes[2]));
+                triNodes[0] = node1;
+                triNodes[1] = node2;
+                triNodes[2] = node4;
+                std::sort(triNodes.begin(), triNodes.end());
+                triSet.insert(Triangle(0, triNodes[0], triNodes[1], triNodes[2]));
+                triNodes[0] = node1;
+                triNodes[1] = node3;
+                triNodes[2] = node4;
+                std::sort(triNodes.begin(), triNodes.end());
+                triSet.insert(Triangle(0, triNodes[0], triNodes[1], triNodes[2]));
+                triNodes[0] = node2;
+                triNodes[1] = node3;
+                triNodes[2] = node4;
+                std::sort(triNodes.begin(), triNodes.end());
+                triSet.insert(Triangle(0, triNodes[0], triNodes[1], triNodes[2]));
+            }
+        }
+        Triangles.resize(triSet.size());
+        unsigned int counter = 0;
+        for(auto it : triSet){
+            Triangles[counter] = it;
+            Triangles[counter].id = counter;
+            Node2Tri.insert({it.nodes[0], counter});
+            Node2Tri.insert({it.nodes[1], counter});
+            Node2Tri.insert({it.nodes[2], counter});
+            ++counter;
+        }
+        UNVmesh.close();
+    }else{
+        std::cout<<"Can't open file!"<<std::endl;
+    }
+    UNVmesh.open(MESH_PATH);
+    if (UNVmesh.is_open()){
+        std::string line;
+
+        while (getline(UNVmesh, line)){
+            //std::cout << line << std::endl;
+            if(line == "  2412") break;
+        }
+        idx_t type, node1, node2, node3, node4;
+        idx_t tri1, tri2, tri3, tri4;
+        long long int id = 0;
+        unsigned int cellsId = 0;
+        while (true) {
+            UNVmesh >> id;
+            if (id == -1) break;
+            UNVmesh >> type;
+            if(type == 111){
+                getline(UNVmesh, line);
+                UNVmesh >> node1 >> node2 >> node3 >> node4;
                 std::pair<UMMAPIterator, UMMAPIterator> nd1 = Node2Tri.equal_range(node1);
                 std::pair<UMMAPIterator, UMMAPIterator> nd2 = Node2Tri.equal_range(node2);
                 std::pair<UMMAPIterator, UMMAPIterator> nd3 = Node2Tri.equal_range(node3);
@@ -116,13 +173,16 @@ Mesh::Mesh(std::ifstream& UNVmesh) {
                 tri3 = v_intersection134[0];
                 tri4 = v_intersection234[0];
                 std::cout << id << " " << tri1 << " " << tri2 << " " << tri3 << " "<< tri4 << std::endl;
+               //TODO Cells.push_back()
+                ++cellsId;
             }
         }
+
     }else{
         std::cout<<"Can't open file!"<<std::endl;
     }
     for(auto n : Triangles){
-        std::cout<<n<<std::endl;
+        std::cout<<n.id<<n<<std::endl;
     }
 
 }

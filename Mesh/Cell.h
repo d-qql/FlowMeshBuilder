@@ -19,7 +19,6 @@ public:
     Node center_pos;    //центральная точка
     double scalar_val;
     std::array<double, 3> vector_val;
-
 };
 
 
