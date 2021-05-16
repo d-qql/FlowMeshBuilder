@@ -20,6 +20,7 @@ std::array<double, 3> Interpolator(const Node& node, idx_t cellIndex, const Mesh
     unsigned int N = Neighbours.size();
     std::vector<double> Distances;
     Distances.resize(N);
+
     for (unsigned int i = 0; i < N; ++i) {
         double CurrentDistance = sqrt(GetDistanceSquared(node, mesh.Cells[Neighbours[i]].center_pos));
         Distances.push_back(CurrentDistance);
