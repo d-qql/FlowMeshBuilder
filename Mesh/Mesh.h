@@ -8,7 +8,8 @@
 #include "Cell.h"
 #include <fstream>
 #include <unordered_map>
-
+#include <cassert>
+#include <set>
 class Mesh {
     using idx_t = unsigned int;
 public:
@@ -16,7 +17,7 @@ public:
     std::vector<Node> Nodes;
     std::vector<Triangle> Triangles;
     std::vector<Cell> Cells;
-    explicit Mesh(std::ifstream& UNVmesh);
+    explicit Mesh(const std::string& MESH_PATH);
 };
 
 
