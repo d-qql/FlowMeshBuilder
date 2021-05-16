@@ -7,8 +7,6 @@
 
 #include <iostream>
 struct Node {
-    using idx_t = unsigned int;
-    idx_t id;
     double x;
     double y;
     double z;
