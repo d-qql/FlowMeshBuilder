@@ -190,8 +190,7 @@ Mesh::Mesh(const std::string& MESH_PATH) {
                 std::pair<UMMAPIterator, UMMAPIterator> tri2cellIT = Tri2Cells.equal_range(cell.triangles[tri]);
                 for(UMMAPIterator it = tri2cellIT.first; it != tri2cellIT.second; ++it){
                     //std::cout<<it->second<<std::endl;
-                    if( it->second != cell.id ) cell.neighbours.push_back(it->second);
-
+                    if( it->second != cell.id ) cell.neighbours.insert({cell.triangles[tri], it->second});
                 }
                 //std::cout<<std::endl;
             }
@@ -199,6 +198,7 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             assert(cell.neighbours.size() <= 4 && "TOO MUCH NEIGHBOURS! BADABUM! DIMA IS DIED");
             assert(!cell.neighbours.empty() && "TOO LOW NEIGHBOURS! BADABUM! DIMA HAS DIED");
         }
+        UNVmesh.close();
     }else{
         std::cout<<"Can't open file!"<<std::endl;
     }
