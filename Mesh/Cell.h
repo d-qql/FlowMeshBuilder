@@ -18,9 +18,10 @@ public:
     std::array<idx_t, 4> triangles; //треугольники, составляющие ячейку
     std::unordered_map<idx_t, idx_t> neighbours;  //индексы соседних ячеек по треугольнику
     Node center_pos;    //центральная точка
+    double volume;
     double scalar_val;
     std::array<double, 3> vector_val;
-    Cell(idx_t id, idx_t tri1, idx_t tri2, idx_t tri3, idx_t tri4, const Node& center);
+    Cell(idx_t id, idx_t tri1, idx_t tri2, idx_t tri3, idx_t tri4, const Node& center, double vol);
 };
 
 

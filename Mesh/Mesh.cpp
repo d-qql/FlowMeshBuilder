@@ -87,6 +87,13 @@ Mesh::Mesh(const std::string& MESH_PATH) {
         for(auto it : triSet){
             Triangles[counter] = it;
             Triangles[counter].id = counter;
+            std::array<double, 3> v0 = {Nodes[Triangles[counter].nodes[1]].x - Nodes[Triangles[counter].nodes[0]].x,
+                                        Nodes[Triangles[counter].nodes[1]].y - Nodes[Triangles[counter].nodes[0]].y,
+                                        Nodes[Triangles[counter].nodes[1]].z - Nodes[Triangles[counter].nodes[0]].z};
+            std::array<double, 3> v1 = {Nodes[Triangles[counter].nodes[2]].x - Nodes[Triangles[counter].nodes[0]].x,
+                                        Nodes[Triangles[counter].nodes[2]].y - Nodes[Triangles[counter].nodes[0]].y,
+                                        Nodes[Triangles[counter].nodes[2]].z - Nodes[Triangles[counter].nodes[0]].z};
+            Triangles[counter].normal = VectorProduct(v0, v1) * (1./6);
             Node2Tri.insert({it.nodes[0], counter});
             Node2Tri.insert({it.nodes[1], counter});
             Node2Tri.insert({it.nodes[2], counter});
@@ -178,10 +185,13 @@ Mesh::Mesh(const std::string& MESH_PATH) {
                 Tri2Cells.insert({tri2, cellsId});
                 Tri2Cells.insert({tri3, cellsId});
                 Tri2Cells.insert({tri4, cellsId});
+                std::array<double, 3> v0 = {Nodes[node2].x - Nodes[node1].x, Nodes[node2].y - Nodes[node1].y, Nodes[node2].z - Nodes[node1].z};
+                std::array<double, 3> v1 = {Nodes[node3].x - Nodes[node1].x, Nodes[node3].y - Nodes[node1].y, Nodes[node3].z - Nodes[node1].z};
+                std::array<double, 3> v2 = {Nodes[node4].x - Nodes[node1].x, Nodes[node4].y - Nodes[node1].y, Nodes[node4].z - Nodes[node1].z};
                 center_x = (Nodes[node1].x + Nodes[node2].x + Nodes[node3].x + Nodes[node4].x) / 4;
                 center_y = (Nodes[node1].y + Nodes[node2].y + Nodes[node3].y + Nodes[node4].y) / 4;
                 center_z = (Nodes[node1].z + Nodes[node2].z + Nodes[node3].z + Nodes[node4].z) / 4;
-                Cells.emplace_back(cellsId, tri1, tri2, tri3, tri4, Node{center_x, center_y, center_z});
+                Cells.emplace_back(cellsId, tri1, tri2, tri3, tri4, Node{center_x, center_y, center_z}, TripleProduct3(v0, v1, v2) / 6.);
                 ++cellsId;
             }
         }
