@@ -55,14 +55,13 @@ idx_t findIntersection(const Node &node1, const Node &node2, idx_t cellIndex, co
         if (t > 0) {
             if (t > 1)
                 return cellIndex;
-            else
-                for (int j = 0; j < mesh.Cells[cellIndex].neighbours.size(); ++j) {
-                    for (int k = 0; k < 4; ++k) {
-                        if (mesh.Cells[cellIndex].triangles[i] ==
-                            mesh.Cells[mesh.Cells[cellIndex].neighbours[j]].triangles[k])
-                            return mesh.Cells[cellIndex].neighbours[j];
-                    }
-                }
+            else {
+                auto it = mesh.Cells[cellIndex].neighbours.find(mesh.Cells[cellIndex].triangles[i]);
+                if (it != mesh.Cells[cellIndex].neighbours.end())
+                    return it->second;
+                else
+                    return cellIndex;
+            }
         }
     }
     return cellIndex;
