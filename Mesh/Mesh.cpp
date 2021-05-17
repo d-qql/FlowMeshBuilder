@@ -93,7 +93,7 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             std::array<double, 3> v1 = {Nodes[Triangles[counter].nodes[2]].x - Nodes[Triangles[counter].nodes[0]].x,
                                         Nodes[Triangles[counter].nodes[2]].y - Nodes[Triangles[counter].nodes[0]].y,
                                         Nodes[Triangles[counter].nodes[2]].z - Nodes[Triangles[counter].nodes[0]].z};
-            Triangles[counter].normal = VectorProduct(v0, v1) * (1./6);
+            Triangles[counter].normal = CrossProduct(v0, v1) * (1./6);
             Node2Tri.insert({it.nodes[0], counter});
             Node2Tri.insert({it.nodes[1], counter});
             Node2Tri.insert({it.nodes[2], counter});
