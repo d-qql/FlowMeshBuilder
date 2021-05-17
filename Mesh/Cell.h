@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "Triangle.h"
+#include <unordered_map>
 class Cell {
 
 using idx_t = unsigned int;
@@ -15,7 +16,7 @@ public:
 
     idx_t id;
     std::array<idx_t, 4> triangles; //треугольники, составляющие ячейку
-    std::vector<idx_t> neighbours;  //индексы соседних ячеек
+    std::unordered_map<idx_t, idx_t> neighbours;  //индексы соседних ячеек по треугольнику
     Node center_pos;    //центральная точка
     double scalar_val;
     std::array<double, 3> vector_val;
