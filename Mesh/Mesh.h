@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <cassert>
 #include <set>
+#include "../Linal/utility.h"
 class Mesh {
     using idx_t = unsigned int;
 public:

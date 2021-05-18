@@ -46,6 +46,12 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             if (type == 11) {
                 getline(UNVmesh, line);
                 getline(UNVmesh, line);
+                getline(UNVmesh, line);
+                continue;
+            }
+            if(type == 41){
+                getline(UNVmesh, line);
+                getline(UNVmesh, line);
                 continue;
             }
 //            if (type == 41) {
@@ -60,6 +66,10 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             if (type == 111) {
                 getline(UNVmesh, line);
                 UNVmesh >> node1 >> node2 >> node3 >> node4;
+                node1--;
+                node2--;
+                node3--;
+                node4--;
                 triNodes[0] = node1;
                 triNodes[1] = node2;
                 triNodes[2] = node3;
@@ -87,6 +97,13 @@ Mesh::Mesh(const std::string& MESH_PATH) {
         for(auto it : triSet){
             Triangles[counter] = it;
             Triangles[counter].id = counter;
+            std::array<double, 3> v0 = {Nodes[Triangles[counter].nodes[1]].x - Nodes[Triangles[counter].nodes[0]].x,
+                                        Nodes[Triangles[counter].nodes[1]].y - Nodes[Triangles[counter].nodes[0]].y,
+                                        Nodes[Triangles[counter].nodes[1]].z - Nodes[Triangles[counter].nodes[0]].z};
+            std::array<double, 3> v1 = {Nodes[Triangles[counter].nodes[2]].x - Nodes[Triangles[counter].nodes[0]].x,
+                                        Nodes[Triangles[counter].nodes[2]].y - Nodes[Triangles[counter].nodes[0]].y,
+                                        Nodes[Triangles[counter].nodes[2]].z - Nodes[Triangles[counter].nodes[0]].z};
+            Triangles[counter].normal = CrossProduct(v0, v1) * (1./6);
             Node2Tri.insert({it.nodes[0], counter});
             Node2Tri.insert({it.nodes[1], counter});
             Node2Tri.insert({it.nodes[2], counter});
@@ -113,9 +130,24 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             UNVmesh >> id;
             if (id == -1) break;
             UNVmesh >> type;
+            if(type == 11){
+                getline(UNVmesh, line);
+                getline(UNVmesh, line);
+                getline(UNVmesh, line);
+                continue;
+            }
+            if(type == 41){
+                getline(UNVmesh, line);
+                getline(UNVmesh, line);
+                continue;
+            }
             if(type == 111){
                 getline(UNVmesh, line);
                 UNVmesh >> node1 >> node2 >> node3 >> node4;
+                node1--;
+                node2--;
+                node3--;
+                node4--;
                 std::pair<UMMAPIterator, UMMAPIterator> nd1 = Node2Tri.equal_range(node1);
                 std::pair<UMMAPIterator, UMMAPIterator> nd2 = Node2Tri.equal_range(node2);
                 std::pair<UMMAPIterator, UMMAPIterator> nd3 = Node2Tri.equal_range(node3);
@@ -178,10 +210,14 @@ Mesh::Mesh(const std::string& MESH_PATH) {
                 Tri2Cells.insert({tri2, cellsId});
                 Tri2Cells.insert({tri3, cellsId});
                 Tri2Cells.insert({tri4, cellsId});
+                std::array<double, 3> v0 = {Nodes[node2].x - Nodes[node1].x, Nodes[node2].y - Nodes[node1].y, Nodes[node2].z - Nodes[node1].z};
+                std::array<double, 3> v1 = {Nodes[node3].x - Nodes[node1].x, Nodes[node3].y - Nodes[node1].y, Nodes[node3].z - Nodes[node1].z};
+                std::array<double, 3> v2 = {Nodes[node4].x - Nodes[node1].x, Nodes[node4].y - Nodes[node1].y, Nodes[node4].z - Nodes[node1].z};
                 center_x = (Nodes[node1].x + Nodes[node2].x + Nodes[node3].x + Nodes[node4].x) / 4;
                 center_y = (Nodes[node1].y + Nodes[node2].y + Nodes[node3].y + Nodes[node4].y) / 4;
                 center_z = (Nodes[node1].z + Nodes[node2].z + Nodes[node3].z + Nodes[node4].z) / 4;
-                Cells.emplace_back(cellsId, tri1, tri2, tri3, tri4, Node{center_x, center_y, center_z});
+                //assert(TripleProduct3(v0, v1, v2) != 0);
+                Cells.emplace_back(cellsId, tri1, tri2, tri3, tri4, Node{center_x, center_y, center_z}, TripleProduct3(v0, v1, v2) / 6.);
                 ++cellsId;
             }
         }
