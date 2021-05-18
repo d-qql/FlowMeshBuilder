@@ -130,6 +130,17 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             UNVmesh >> id;
             if (id == -1) break;
             UNVmesh >> type;
+            if(type == 11){
+                getline(UNVmesh, line);
+                getline(UNVmesh, line);
+                getline(UNVmesh, line);
+                continue;
+            }
+            if(type == 41){
+                getline(UNVmesh, line);
+                getline(UNVmesh, line);
+                continue;
+            }
             if(type == 111){
                 getline(UNVmesh, line);
                 UNVmesh >> node1 >> node2 >> node3 >> node4;
