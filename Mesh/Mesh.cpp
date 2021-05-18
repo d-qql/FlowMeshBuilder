@@ -46,6 +46,12 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             if (type == 11) {
                 getline(UNVmesh, line);
                 getline(UNVmesh, line);
+                getline(UNVmesh, line);
+                continue;
+            }
+            if(type == 41){
+                getline(UNVmesh, line);
+                getline(UNVmesh, line);
                 continue;
             }
 //            if (type == 41) {
@@ -60,6 +66,10 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             if (type == 111) {
                 getline(UNVmesh, line);
                 UNVmesh >> node1 >> node2 >> node3 >> node4;
+                node1--;
+                node2--;
+                node3--;
+                node4--;
                 triNodes[0] = node1;
                 triNodes[1] = node2;
                 triNodes[2] = node3;
@@ -123,6 +133,10 @@ Mesh::Mesh(const std::string& MESH_PATH) {
             if(type == 111){
                 getline(UNVmesh, line);
                 UNVmesh >> node1 >> node2 >> node3 >> node4;
+                node1--;
+                node2--;
+                node3--;
+                node4--;
                 std::pair<UMMAPIterator, UMMAPIterator> nd1 = Node2Tri.equal_range(node1);
                 std::pair<UMMAPIterator, UMMAPIterator> nd2 = Node2Tri.equal_range(node2);
                 std::pair<UMMAPIterator, UMMAPIterator> nd3 = Node2Tri.equal_range(node3);
@@ -191,6 +205,7 @@ Mesh::Mesh(const std::string& MESH_PATH) {
                 center_x = (Nodes[node1].x + Nodes[node2].x + Nodes[node3].x + Nodes[node4].x) / 4;
                 center_y = (Nodes[node1].y + Nodes[node2].y + Nodes[node3].y + Nodes[node4].y) / 4;
                 center_z = (Nodes[node1].z + Nodes[node2].z + Nodes[node3].z + Nodes[node4].z) / 4;
+                //assert(TripleProduct3(v0, v1, v2) != 0);
                 Cells.emplace_back(cellsId, tri1, tri2, tri3, tri4, Node{center_x, center_y, center_z}, TripleProduct3(v0, v1, v2) / 6.);
                 ++cellsId;
             }

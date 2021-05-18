@@ -12,5 +12,5 @@ std::array<double, 3> CrossProduct(const std::array<double, 3>& v0, const std::a
 
 std::array<double, 3> operator*=(std::array<double, 3> arr, double k);
 std::array<double, 3> operator*(std::array<double, 3> arr, double k);
-
+std::array<double, 3> operator+(const std::array<double, 3>& arr1, const std::array<double, 3>& arr2);
 #endif //FLOWMESHBUILDER_UTILITY_H
