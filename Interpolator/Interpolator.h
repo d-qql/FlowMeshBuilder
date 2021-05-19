@@ -1,7 +1,3 @@
-//
-// Created by node on 12.05.2021.
-//
-
 #ifndef FLOWMESHBUILDER_INTERPOLATOR_H
 #define FLOWMESHBUILDER_INTERPOLATOR_H
 
